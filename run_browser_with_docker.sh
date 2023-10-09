@@ -1,12 +1,12 @@
 #!/bin/bash
 
 #######################################
-# The script starts a remote-chrome, remote-firefox or remote-edge docker container for running Browser tests on a developer machine only.
+# The script starts a chrome, firefox or edge docker container for running Browser tests on a developer machine only.
 # The container directs TCP requests from the container to the host machine enabling testing services running via Service Manager.
 # WARNING: Do not use this script in the Jenkins Continuous Integration environment
 #
 # Arguments:
-#   remote-chrome, remote-firefox or remote-edge
+#   chrome, firefox or edge
 #
 # Output:
 #   Starts  chrome, firefox or edge docker containers from chrome-with-rinetd, firefox-with-rinetd or edge-with-rinetd image respectively
@@ -29,14 +29,14 @@ port_mappings="$port_mappings,11000->11000,6010->6010"
 # Defines the BROWSER variable from the argument passed to the script
 #######################################
 if [ -z "${1}" ]; then
-  echo "ERROR: Browser type not specified. Re-run the script with the option remote-chrome, remote-firefox or remote-edge."
-  exit 1
-elif [ "${1}" = "remote-chrome" ]; then
-  BROWSER="artefacts.tax.service.gov.uk/chrome-with-rinetd:latest"
-elif [ "${1}" = "remote-firefox" ]; then
-  BROWSER="artefacts.tax.service.gov.uk/firefox-with-rinetd:latest"
-elif [ "${1}" = "remote-edge" ]; then
-  BROWSER="artefacts.tax.service.gov.uk/edge-with-rinetd:latest"
+    echo "ERROR: Browser type not specified. Re-run the script with the option chrome, firefox or edge."
+    exit 1
+elif [ "${1}" = "chrome" ]; then
+    BROWSER="artefacts.tax.service.gov.uk/chrome-with-rinetd:latest"
+elif [ "${1}" = "firefox" ]; then
+    BROWSER="artefacts.tax.service.gov.uk/firefox-with-rinetd:latest"
+elif [ "${1}" = "edge" ]; then
+    BROWSER="artefacts.tax.service.gov.uk/edge-with-rinetd:latest"
 fi
 
 #######################################
@@ -56,13 +56,14 @@ fi
 #######################################
 
 docker pull ${BROWSER} \
-  && docker run \
-  -d \
-  --rm \
-  --name "${1}" \
-  --shm-size=2g \
-  -p 4444:4444 \
-  -p 5900:5900 \
-  -e PORT_MAPPINGS="$port_mappings" \
-  -e TARGET_IP='host.docker.internal' \
-  ${BROWSER}
+    && docker run \
+        -d \
+        --rm \
+        --name "${1}" \
+        --shm-size=2g \
+        -p 4444:4444 \
+        -p 5900:5900 \
+        -e PORT_MAPPINGS="$port_mappings" \
+        -e TARGET_IP='host.docker.internal' \
+        -e SE_OPTS="--enable-managed-downloads true" \
+        ${BROWSER}
