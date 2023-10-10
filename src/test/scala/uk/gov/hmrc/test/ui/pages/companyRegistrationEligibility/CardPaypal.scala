@@ -1,5 +1,6 @@
 package uk.gov.hmrc.test.ui.pages.companyRegistrationEligibility
 
+import uk.gov.hmrc.configuration.TestEnvironment
 import uk.gov.hmrc.test.ui.pages.BasePage
 
 object CardPaypal extends BasePage{

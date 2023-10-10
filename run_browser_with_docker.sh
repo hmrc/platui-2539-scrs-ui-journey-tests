@@ -15,11 +15,8 @@
 #######################################
 # Requires services under test running via Service Manager
 # Initializes port_mappings with all running application ports using the Service Manager status command.
-# Appends ZAP_PORT 11000 to ./run-zap-spec.sh
 #######################################
 port_mappings=$(sm2 --status | grep PASS | awk '{ print $8"->"$8 }' | paste -sd "," -)
-# If using sm, comment out the above line and instead use the below line
-#port_mappings=$(sm -s | grep PASS | awk '{ print $12"->"$12 }' | paste -sd "," -)
 port_mappings="$port_mappings,11000->11000,6010->6010"
 
 # Alternatively, port_mappings can be explicitly initialised as below:

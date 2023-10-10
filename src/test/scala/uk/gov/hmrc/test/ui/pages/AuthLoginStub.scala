@@ -6,6 +6,7 @@
 package uk.gov.hmrc.test.ui.pages
 
 import org.openqa.selenium.support.ui.Select
+import uk.gov.hmrc.configuration.TestEnvironment
 import uk.gov.hmrc.test.ui.pages.companyRegistrationEligibility.SettingUpNewLimitedCompany
 
 object AuthLoginStub extends BasePage {

@@ -1,5 +1,6 @@
 package uk.gov.hmrc.test.ui.pages.payeRegistration
 
+import uk.gov.hmrc.configuration.TestEnvironment
 import uk.gov.hmrc.test.ui.pages.BasePage.clickById
 
 object WhereCompanyCarriesOutBusinessActivities {

@@ -1,5 +1,6 @@
 package uk.gov.hmrc.test.ui.pages.companyRegistration
 
+import uk.gov.hmrc.configuration.TestEnvironment
 import uk.gov.hmrc.test.ui.pages.BasePage
 
 object SecondCoHoStubHO3andHO4 extends BasePage {

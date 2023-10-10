@@ -6,6 +6,10 @@ scalaVersion := "2.13.10"
 
 scalacOptions ++= Seq("-unchecked", "-deprecation")
 
+resolvers += "HMRC-open-artefacts-maven" at "https://open.artefacts.tax.service.gov.uk/maven2"
+resolvers += "hmrc-releases" at "https://artefacts.tax.service.gov.uk/artifactory/hmrc-releases/"
+resolvers += Resolver.url("HMRC-open-artefacts-ivy", url("https://open.artefacts.tax.service.gov.uk/ivy2"))(Resolver.ivyStylePatterns)
+
 testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-h", "target/test-reports/html-report")
 testOptions in Test += Tests.Argument("-o")
 
@@ -23,4 +27,3 @@ libraryDependencies ++= Seq(
   "com.novocode" % "junit-interface" % "0.11" % "test",
   "log4j" % "log4j" % "1.2.17"
 )
-

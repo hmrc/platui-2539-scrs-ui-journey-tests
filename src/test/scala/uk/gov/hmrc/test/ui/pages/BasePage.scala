@@ -1,12 +1,13 @@
 package uk.gov.hmrc.test.ui.pages
 
-import org.openqa.selenium.support.ui.{ExpectedConditions, FluentWait}
-import org.openqa.selenium.{By, WebDriver}
-import org.scalatest.matchers.must.Matchers
-import org.scalatestplus.selenium.Page
-
 import java.time.Duration
 import java.time.temporal.ChronoUnit
+import org.openqa.selenium.{By, WebDriver}
+import org.openqa.selenium.support.ui.{ExpectedConditions, FluentWait}
+import org.scalatest.matchers.must.Matchers
+import org.scalatestplus.selenium.Page
+import uk.gov.hmrc.selenium.webdriver.Driver
+
 import scala.util.Random
 
 object BasePage extends BasePage {
