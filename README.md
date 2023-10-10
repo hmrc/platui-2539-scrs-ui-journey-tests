@@ -1,132 +1,64 @@
-**This is a template README.md.  Be sure to update this with project specific content that describes your ui test project.**
-
 # platui-2539-scrs-ui-journey-tests
-UI test suite for the `<digital service name>` using WebDriver and `<scalatest/cucumber>`.  
 
-## Running the tests
+UI test suite for the `scrs-ui-journey-tests` to test ui-test-runner and sbt-test-report migration as part of PLATUI-2539.
 
-Prior to executing the tests ensure you have:
- - Docker - to run mongo and browser (Chrome, Firefox or Edge) inside a container 
- - Appropriate [drivers installed](#installing-local-driver-binaries) - to run tests against locally installed Browser
- - Installed/configured [service manager](https://github.com/hmrc/service-manager).  
+## Pre-requisites
 
-Run the following command to start services locally:
+### Services
 
-    docker run --rm -d --name mongo -d -p 27017:27017 mongo:4.4
-    sm2 --start PLATFORM_EXAMPLE_UI_TESTS 
-
-Using the `--wait 100` argument ensures a health check is run on all the services started as part of the profile. `100` refers to the given number of seconds to wait for services to pass health checks.
-
-Then execute the `run_tests.sh` script:
-
-    ./run_tests.sh <browser-driver> <environment> 
-
-The `run_tests.sh` script defaults to using `chrome` in the `local` environment.  For a complete list of supported param values, see:
- - `src/test/resources/application.conf` for **environment** 
- - [webdriver-factory](https://github.com/hmrc/webdriver-factory#2-instantiating-a-browser-with-default-options) for **browser-driver**
-
-## Running tests against a containerised browser - on a developer machine
-
-The script `./run_browser_with_docker.sh` can be used to start a Chrome, Firefox or Edge container on a developer machine. 
-The script requires `remote-chrome`, `remote-firefox` or `remote-edge` as an argument.
-
-Read more about the script's functionality [here](run_browser_with_docker.sh).
-
-To run against a containerised Chrome browser:
+Start Mongo Docker container as follows:
 
 ```bash
-./run_browser_with_docker.sh remote-chrome 
-./run_tests.sh remote-chrome local
+docker run --rm -d -p 27017:27017 --name mongo mongo:4.4
 ```
 
-`./run_browser_with_docker.sh` is **NOT** required when running in a CI environment. 
+Start `scrs-ui-journey-tests` services as follows:
 
-> :warning: **SM2 **: If you use [SM2](https://github.com/hmrc/sm2) rather than [service manager](https://github.com/hmrc/service-manager) please note that this is **NOT** currently supported in build Jenkins.
+```bash
+sm2 --start SCRS_ALL --appendArgs '{"ADDRESS_LOOKUP_FRONTEND": ["-Dmicroservice.hosts.allowList.1=localhost"]}'
+```
 
-#### Running the tests against a test environment
+### Dockerized browser container(s)
 
-To run the tests against an environment set the corresponding `host` environment property as specified under
- `<env>.host.services` in the [application.conf](/src/test/resources/application.conf). 
+Start a browser Docker container as follows:
 
-For example, to execute the `run_tests.sh` script using Chrome remote-webdriver against QA environment 
+* Argument `<browser>` must be `remote-chrome`, `remote-edge` or `remote-firefox`.
 
-    ./run_tests.sh remote-chrome qa
+```bash
+./run_browser_with_docker.sh <browser>
+```
 
-## Running ZAP tests
+### Test inspection and debugging
 
-ZAP tests can be automated using the HMRC Dynamic Application Security Testing approach. Running 
+Connect to `127.0.0.1:5900` via a VNC client to inspect and debug test execution.
+
+If prompted for a password the default is `secret`.
+
+## Tests
+
+Run tests as follows:
+
+* Argument `<browser>` must be `chrome`, `edge`, `firefox`, `remote-chrome`, `remote-edge` or `remote-firefox`.
+* Argument `<environment>` must be `local`, `dev`, `qa` or `staging`.
+
+```bash
+./run_tests.sh <browser> <environment>
+```
+
+### Running ZAP tests
+
+ZAP tests can be automated using the HMRC Dynamic Application Security Testing approach. Running
 automated ZAP tests should not be considered a substitute for manual exploratory testing using OWASP ZAP.
 
 #### Tagging tests for ZAP
 
 It is not required to proxy every journey test via ZAP. The intention of proxying a test through ZAP is to expose all the
- relevant pages of an application to ZAP. So tagging a subset of the journey tests or creating a 
- single ZAP focused journey test is sufficient.
+relevant pages of an application to ZAP. So tagging a subset of the journey tests or creating a
+single ZAP focused journey test is sufficient.
 
-#### Configuring the browser to proxy via ZAP 
+#### Configuring the browser to proxy via ZAP
 
-Setting the system property `zap.proxy=true` configures the browser specified in `browser` property to proxy via ZAP. 
-This is achieved using [webdriver-factory](https://github.com/hmrc/webdriver-factory#proxying-trafic-via-zap).
-
-#### Executing a ZAP test
-
-The shell script `run_zap_tests.sh` is available to execute ZAP tests. The script proxies a set of journey tests, 
-tagged as `ZapTests`, via ZAP.  
-
-For example, to execute ZAP tests locally using a Chrome browser
-
-```
-./run_zap_test.sh chrome local
-```
-
-To execute ZAP tests locally using a remote-chrome browser
-
-```
-./run_browser_with_docker.sh remote-chrome 
-./run_zap_test.sh remote-chrome local
-``` 
-
-`./run_browser_with_docker.sh` is **NOT** required when running in a CI environment.
-
-### Running tests using BrowserStack
-If you would like to run your tests via BrowserStack from your local development environment please refer to the [webdriver-factory](https://github.com/hmrc/webdriver-factory/blob/main/README.md/#user-content-running-tests-using-browser-stack) project.
-
-## Installing local driver binaries
-
-This project supports UI test execution using Firefox (Geckodriver) and Chrome (Chromedriver) browsers. 
-
-See the `drivers/` directory for some helpful scripts to do the installation work for you.  They should work on both Mac and Linux by running the following command:
-
-    ./installGeckodriver.sh <operating-system> <driver-version>
-    or
-    ./installChromedriver <operating-system> <driver-version>
-
-- *<operating-system>* defaults to **linux64**, however it also supports **macos**
-- *<driver-version>* defaults to **0.21.0** for Gecko/Firefox, and the latest release for Chrome.  You can, however, however pass any version available at the [Geckodriver](https://github.com/mozilla/geckodriver/tags) or [Chromedriver](http://chromedriver.storage.googleapis.com/) repositories.
-
-**Note 1:** *You will need to ensure that you have a recent version of Chrome and/or Firefox installed for the later versions of the drivers to work reliably.*
-
-**Note 2** *These scripts use sudo to set the right permissions on the drivers so you will likely be prompted to enter your password.*
-
-## Scalafmt
-
-Check all project files are formatted as expected as follows:
-
-```bash
-sbt scalafmtCheckAll scalafmtCheck
-```
-
-Format `*.sbt` and `project/*.scala` files as follows:
-
-```bash
-sbt scalafmtSbt
-```
-
-Format all project files as follows:
-
-```bash
-sbt scalafmtAll
-```
+Setting the system property `security.assessment=true` configures the browser specified in `browser` property to proxy via ZAP.
 
 ## License
 
