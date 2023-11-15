@@ -14,7 +14,7 @@ testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-h", "target/te
 testOptions in Test += Tests.Argument("-o")
 
 libraryDependencies ++= Seq(
-  "uk.gov.hmrc" %% "ui-test-runner" % "0.11.0" % "test",
+  "uk.gov.hmrc" %% "ui-test-runner" % "0.+" % "test", // Do NOT use .+ notation in test repositories
   "org.scalatest" %% "scalatest" % "3.2.17" % "test",
   "org.scalatestplus"   %% "selenium-4-12"     % "3.2.17.0" % Test,
   "org.pegdown" % "pegdown" % "1.6.0" % "test",
